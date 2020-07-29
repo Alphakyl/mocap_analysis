@@ -13,8 +13,16 @@ class Analysis:
         self.gate_pose = None
         self.robot_pose = None
         self.leica_transform = None
-        if (self.gate_pose and self.robot_pose and robot_pose):
-            pose_diff = self.pose_diff()
+        while not rospy.is_shutdown():
+            if (self.gate_pose and self.robot_pose and self.leica_transform):
+                self.tf_from_mocap = tf.transformations.concatenate_matrices(tf.transformations.inverse_matrix(self.robot_pose),self.sub_robot)
+                rospy.loginfo("Robot->Gate:\n%s, %s",\
+                tf.transformations.translation_from_matrix(self.tf_from_mocap).__str__(),\
+                [elem*180/3.14 for elem in tf.transformations.euler_from_matrix(self.tf_from_mocap, 'sxyz')].__str__())
+                rospy.loginfo("Robot->Gate:\n%s, %s",\
+                tf.transformations.translation_from_matrix(self.leica_transform).__str__(),\
+                [elem*180/3.14 for elem in tf.transformations.euler_from_matrix(self.leica_transform, 'sxyz')].__str__())
+                
 
 
 
@@ -24,19 +32,22 @@ class Analysis:
             translation_matrix = tf.transformations.translation_matrix([pose.pose.position.x, pose.pose.position.y, pose.pose.position.z])
             # Get the rotation to the rigid body
             rot_matrix = tf.transformations.rotation_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
-            # Deal with the offset to the center of the rigid body
-
-
-        else:
-            # moving average stuff
-
-
-    def sub_robot(self, pose):
-        # Get the translation to the rigid body
-        translation_matrix = tf.transformations.translation_matrix([pose.pose.position.x, pose.pose.position.y, pose.pose.position.z])
-        # Get the rotation to the rigid body
-        rot_matrix = tf.transformations.rotation_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
-        # Deal with the offset to the center of the rigid body
-
+            self.gate_pose = tf.transformations.concatenate_matrices(translation_matrix, rot_matrix)
         
-    def pose_diff(self, pose1, pose2):
+            
+        
+    def sub_robot(self, pose):
+        if not self.robot_pose:
+            # Get the translation to the rigid body
+            translation_matrix = tf.transformations.translation_matrix([pose.pose.position.x, pose.pose.position.y, pose.pose.position.z])
+            # Get the rotation to the rigid body
+            rot_matrix = tf.transformations.rotation_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
+            self.robot_pose = tf.transformations.concatenate_matrices(translation_matrix, rot_matrix)
+    
+    def sub_leica(self, pose):
+        if not self.leica_transform:
+            # Get the translation to the rigid body
+            translation_matrix = tf.transformations.translation_matrix([pose.pose.position.x, pose.pose.position.y, pose.pose.position.z])
+            # Get the rotation to the rigid body
+            rot_matrix = tf.transformations.rotation_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
+            self.robot_pose = tf.transformations.concatenate_matrices(translation_matrix, rot_matrix)
