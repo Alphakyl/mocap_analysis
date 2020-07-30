@@ -39,13 +39,13 @@ class Analysis:
             # Get the rotation to the rigid body
             rot_matrix = tf.transformations.quaternion_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
             self.gate_pose = tf.transformations.concatenate_matrices(translation_matrix, rot_matrix)
-            # Apply rotations to get frame in correct orientation
-            xaxis, yaxis, zaxis = (1, 0, 0), (0, 1, 0), (0, 0, 1)
-            Rx = tf.transformations.rotation_matrix(-math.pi/2.0,xaxis)
-            Ry = tf.transformations.rotation_matrix(-math.pi/2.0,yaxis)
-            Rz = tf.transformations.rotation_matrix(0.0, zaxis)
-            applied_rot_matrix = tf.transformations.concatenate_matrices(Ry,Rx,Rz)
-            self.gate_pose = tf.transformations.concatenate_matrices(self.gate_pose,applied_rot_matrix)
+            # # Apply rotations to get frame in correct orientation
+            # xaxis, yaxis, zaxis = (1, 0, 0), (0, 1, 0), (0, 0, 1)
+            # Rx = tf.transformations.rotation_matrix(-math.pi/2.0,xaxis)
+            # Ry = tf.transformations.rotation_matrix(-math.pi/2.0,yaxis)
+            # Rz = tf.transformations.rotation_matrix(0.0, zaxis)
+            # applied_rot_matrix = tf.transformations.concatenate_matrices(Ry,Rx,Rz)
+            # self.gate_pose = tf.transformations.concatenate_matrices(self.gate_pose,applied_rot_matrix)
         
             
         
@@ -54,14 +54,15 @@ class Analysis:
             # Get the translation to the rigid body
             translation_matrix = tf.transformations.translation_matrix([pose.pose.position.x, pose.pose.position.y, pose.pose.position.z])
             # Get the rotation to the rigid body
-            xaxis, yaxis, zaxis = (1, 0, 0), (0, 1, 0), (0, 0, 1)
             rot_matrix = tf.transformations.quaternion_matrix([pose.pose.orientation.x, pose.pose.orientation.y, pose.pose.orientation.z, pose.pose.orientation.w])
             self.robot_pose = tf.transformations.concatenate_matrices(translation_matrix,rot_matrix)
-            Rx = tf.transformations.rotation_matrix(-math.pi/2.0,xaxis)
-            Ry = tf.transformations.rotation_matrix(-math.pi/2.0,yaxis)
-            Rz = tf.transformations.rotation_matrix(0.0, zaxis)
-            applied_rot_matrix = tf.transformations.concatenate_matrices(Ry,Rx,Rz)
-            self.robot_pose = tf.transformations.concatenate_matrices(self.robot_pose,applied_rot_matrix)
+            # # Apply rotations to get frame in correct orientation
+            # xaxis, yaxis, zaxis = (1, 0, 0), (0, 1, 0), (0, 0, 1)
+            # Rx = tf.transformations.rotation_matrix(-math.pi/2.0,xaxis)
+            # Ry = tf.transformations.rotation_matrix(-math.pi/2.0,yaxis)
+            # Rz = tf.transformations.rotation_matrix(0.0, zaxis)
+            # applied_rot_matrix = tf.transformations.concatenate_matrices(Ry,Rx,Rz)
+            # self.robot_pose = tf.transformations.concatenate_matrices(self.robot_pose,applied_rot_matrix)
     
     def leica_callback(self, pose):
         if self.leica_transform is None:

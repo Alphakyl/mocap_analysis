@@ -2,5 +2,5 @@
 
 <launch>
     <node pkg="mocap_analysis" type="analyze.py" name="analyze" output="screen"/>
-    <node pkg="rosbag" type="play" name="player" args="--clock $(find mocap_analysis)/bags_good/flat_test.bag"/>
+    <node pkg="rosbag" type="play" name="player" args="--clock $(find mocap_analysis)/bags_aligned_and_offset/flat_test.bag"/>
 </launch>
